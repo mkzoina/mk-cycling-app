@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cycling Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px; }
+        h1 { margin-bottom: 4px; }
+        .stats { background: #eaf4ff; padding: 16px; border-radius: 8px; margin-bottom: 20px; }
+        .stats p { margin: 4px 0; }
+        .banner { background: #fff3cd; color: #664d03; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; }
+        .settings-form { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+        .settings-form label { margin: 0; font-weight: normal; }
+        .settings-form input { width: 60px; margin: 0; }
+        form { background: #f4f4f4; padding: 16px; border-radius: 8px; margin-bottom: 24px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 6px; margin-top: 4px; box-sizing: border-box; }
+        button { margin-top: 14px; padding: 8px 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 6px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>🚴 Cycling Tracker</h1>
+
+    {% if reminder.due %}
+    <div class="banner">
+        ⏰ You haven't ridden in {{ reminder.days_since_last_ride }} days — time to get back out there!
+    </div>
+    {% endif %}
+
+    <div class="stats">
+        <p><strong>Total rides:</strong> {{ stats.total_rides }}</p>
+        <p><strong>Total distance:</strong> {{ stats.total_distance }} km</p>
+        <p><strong>This week:</strong> {{ stats.weekly_distance }} km</p>
+        <p><strong>This month:</strong> {{ stats.monthly_distance }} km</p>
+        {% if stats.longest_ride %}
+        <p><strong>Longest ride:</strong> {{ stats.longest_ride.distance_km }} km on {{ stats.longest_ride.date }}</p>
+        {% endif %}
+        {% if stats.fastest_ride %}
+        <p><strong>Fastest avg speed:</strong> {{ stats.fastest_ride.avg_speed_kmh }} km/h on {{ stats.fastest_ride.date }}</p>
+        {% endif %}
+    </div>
+
+    <form action="{{ url_for('settings') }}" method="post" class="settings-form">
+        <label for="reminder_days">Remind me if I haven't ridden in (days):</label>
+        <input type="number" name="reminder_days" id="reminder_days" min="1" value="{{ reminder.reminder_days }}">
+        <button type="submit">Save</button>
+    </form>
+
+    <form action="{{ url_for('add') }}" method="post">
+        <label for="distance_km">Distance (km)</label>
+        <input type="number" step="0.1" name="distance_km" id="distance_km" required>
+
+        <label for="duration_min">Duration (minutes)</label>
+        <input type="number" step="1" name="duration_min" id="duration_min" required>
+
+        <label for="skill_tag">Skill</label>
+        <select name="skill_tag" id="skill_tag">
+            {% for tag in skill_tags %}
+                <option value="{{ tag }}">{{ tag }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="notes">Notes</label>
+        <textarea name="notes" id="notes" rows="2"></textarea>
+
+        <button type="submit">Add Ride</button>
+    </form>
+
+    <h2>Ride History</h2>
+    {% if rides %}
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Distance (km)</th>
+            <th>Duration (min)</th>
+            <th>Speed (km/h)</th>
+            <th>Skill</th>
+            <th>Notes</th>
+        </tr>
+        {% for ride in rides %}
+        <tr>
+            <td>{{ ride.date }}</td>
+            <td>{{ ride.distance_km }}</td>
+            <td>{{ ride.duration_min }}</td>
+            <td>{{ ride.avg_speed_kmh }}</td>
+            <td>{{ ride.skill_tag }}</td>
+            <td>{{ ride.notes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No rides logged yet.</p>
+    {% endif %}
+</body>
+</html>

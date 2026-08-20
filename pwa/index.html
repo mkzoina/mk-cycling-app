@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cycling Tracker</title>
+<meta name="theme-color" content="#1B1F23">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wheel-mark" aria-hidden="true"></div>
+  <h1>CycleLog</h1>
+  <span id="offline-pill" class="pill">offline-ready</span>
+</header>
+
+<main>
+  <div id="banner" class="banner hidden"></div>
+
+  <!-- Bike computer style readout -->
+  <section class="computer" aria-label="Ride stats">
+    <div class="computer-row primary">
+      <span class="computer-label">total distance</span>
+      <span class="computer-value" id="stat-total">0.0<small>km</small></span>
+    </div>
+    <div class="computer-grid">
+      <div class="computer-cell">
+        <span class="computer-label">7 days</span>
+        <span class="computer-value small" id="stat-week">0.0<small>km</small></span>
+      </div>
+      <div class="computer-cell">
+        <span class="computer-label">30 days</span>
+        <span class="computer-value small" id="stat-month">0.0<small>km</small></span>
+      </div>
+      <div class="computer-cell">
+        <span class="computer-label">rides</span>
+        <span class="computer-value small" id="stat-rides">0</span>
+      </div>
+      <div class="computer-cell">
+        <span class="computer-label">top speed</span>
+        <span class="computer-value small" id="stat-fastest">–</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="bests-card" hidden>
+    <h2>Personal bests by skill</h2>
+    <ul id="bests-list" class="bests-list"></ul>
+  </section>
+
+  <section class="card">
+    <h2>Log a ride</h2>
+    <form id="ride-form">
+      <label for="distance_km">Distance (km)</label>
+      <input type="number" step="0.1" min="0" id="distance_km" required>
+
+      <label for="duration_min">Duration (minutes)</label>
+      <input type="number" step="1" min="1" id="duration_min" required>
+
+      <label for="skill_tag">Skill</label>
+      <select id="skill_tag">
+        <option value="general">General</option>
+        <option value="hill climb">Hill climb</option>
+        <option value="cornering">Cornering</option>
+        <option value="endurance">Endurance</option>
+      </select>
+
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="2"></textarea>
+
+      <button type="submit" class="btn-primary">Add ride</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Reminder</h2>
+    <form id="reminder-form" class="inline-form">
+      <label for="reminder_days">Remind me after</label>
+      <input type="number" id="reminder_days" min="1" value="3">
+      <span>days without a ride</span>
+      <button type="submit" class="btn-secondary">Save</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Ride history</h2>
+    <ul id="ride-list" class="ride-list">
+      <li class="empty">No rides logged yet.</li>
+    </ul>
+  </section>
+</main>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
